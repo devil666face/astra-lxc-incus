@@ -1,7 +1,6 @@
 #!/bin/bash
 ASTRA_RELEASE="1.7.6"
-# DOCKER_PKG="docker.io docker-compose"
-DOCKER_PKG="docker.io"
+DOCKER_PKG="docker.io docker-compose"
 UTIL_PKG="apt-mirror dpkg-dev debconf-utils apt-utils ca-certificates"
 
 mkdir -p /tmp/archives
