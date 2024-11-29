@@ -7,5 +7,7 @@
 /incus
 /incus-docker.tar.gz
 /incus-migrate
-/install/bin
-/install/.env
+/incus.tar.gz
+/init/bin
+/init/.env
+/install
