@@ -77,17 +77,33 @@ func New(_path string) *Install {
 }
 
 func (i *Install) Run() error {
-	if err := i.installDocker(); err != nil {
-		return err
+	steps := []func() error{
+		i.copyBin,
+		i.installDocker,
+		i.importImage,
+		i.initIncus,
+		i.loadImages,
 	}
-	if err := i.importImage(); err != nil {
-		return err
+
+	for _, step := range steps {
+		if err := step(); err != nil {
+			return err
+		}
 	}
-	if err := i.initIncus(); err != nil {
-		return err
+	return nil
+}
+
+func (i *Install) copyBin() error {
+	for _, b := range []string{"incus", "incus-migrate"} {
+		if _, err := shell.FromString(fmt.Sprintf("chmod +x %s", b)).WithDir(i.path).Run(); err != nil {
+			return fmt.Errorf("failed to +x for %s: %w", b, err)
+		}
+		if _, err := shell.FromString(fmt.Sprintf("cp %s /usr/local/bin", b)).WithDir(i.path).Run(); err != nil {
+			return fmt.Errorf("failed to copy %s in /usr/local/bin: %w", b, err)
+		}
 	}
-	if err := i.loadImages(); err != nil {
-		return err
+	if _, err := shell.FromString(fmt.Sprintf("cp %s /var/lib/incus/", "incus-migrate")).WithDir(i.path).Run(); err != nil {
+		return fmt.Errorf("failed to copy in /usr/local/bin: %w", err)
 	}
 	return nil
 }
