@@ -1,6 +1,11 @@
+/alce-incus-lxc-image.tar.gz
+/alse-incus-lxc-image.tar.gz
 /data
 /docker-packages.tar.gz
 /docker-with-compose-packages.tar.gz
+/.env
+/incus
 /incus-docker.tar.gz
-/alce-incus-lxc-image.tar.gz
-/alse-incus-lxc-image.tar.gz
+/incus-migrate
+/install/bin
+/install/.env
