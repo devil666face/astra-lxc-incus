@@ -18,7 +18,7 @@ POV:
 
 ### Загрузить и подготовить архив
 
-> - Загружаем все необходимые файлы и создаем архив `incus.tar.gz`
+> Загружаем все необходимые файлы и создаем архив `incus.tar.gz`
 
 - `bash -c "$(wget --no-cache https://github.com/devil666face/astra-lxc-incus/blob/main/download.sh -O -)"`
   или
@@ -41,6 +41,19 @@ tar -czvf incus.tar.gz install incus alce-incus-lxc-image.tar.gz alse-incus-lxc-
 ## Подготовка astrы
 
 > Для деплоя incus необходима astra версии 1.7.0 и выше
+
+Копируем созданный на предыдущем шаге `incus.tar.gz` на ноду под деплой и распаковываем
+
+```bash
+scp incus.tar.gz astra@192.168.200.100:~/
+```
+
+> Далее все комнады на удаленном хосте
+
+```bash
+tar -xf incus.tar.gz -C /tmp
+
+```
 
 Ставим docker.io и docker-compose
 
