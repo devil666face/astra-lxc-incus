@@ -125,16 +125,74 @@ docker run -d \
 
 ```bash
 docker exec -it incus incus admin init
+```
+
+```
+Would you like to use clustering? (yes/no) [default=no]:
+Do you want to configure a new storage pool? (yes/no) [default=yes]:
+Name of the new storage pool [default=default]: pool
+Name of the storage backend to use (lvm, lvmcluster, btrfs, dir) [default=btrfs]: dir
+Where should this storage pool store its data? [default=/var/lib/incus/storage-pools/pool]:
+Would you like to create a new local network bridge? (yes/no) [default=yes]:
+What should the new bridge be called? [default=incusbr0]: br0
+What IPv4 address should be used? (CIDR subnet notation, “auto” or “none”) [default=auto]: 192.168.100.1/24
+Would you like to NAT IPv4 traffic on your bridge? [default=yes]:
+What IPv6 address should be used? (CIDR subnet notation, “auto” or “none”) [default=auto]: none
+Would you like the server to be available over the network? (yes/no) [default=no]:
+Would you like stale cached images to be updated automatically? (yes/no) [default=yes]:
+Would you like a YAML "init" preseed to be printed? (yes/no) [default=no]:
+```
+
+```bash
 docker exec -it incus incus config set core.https_address :8443
 docker exec -it incus incus config trust add local
+```
+
+```
+Client local certificate add token:
+eyJjbGllbnRfbmFtZSI6ImxvY2FsIiwiZmluZ2VycHJpbnQiOiJkMmM3YzI3NWYzYjcyOTA2Njg3NjczOWZmZTI2MjliYTRjMGI0Njg4N2Y3ZDEyNGM1OWZlMmM2YzU0ZTEzNTUzIiwiYWRkcmVzc2VzIjpbIjEwLjIyNC4xNTguMTcxOjg0NDMiLCIxNzIuMTcuMC4xOjg0NDMiLCIxOTIuMTY4LjEwMC4xOjg0NDMiLCIxOTIuMTY4LjIwMC4xOjg0NDMiLCIxOTIuMTY4LjEwMC4xOjg0NDMiXSwic2VjcmV0IjoiZGE2MzM2Mjk0ZmFkYTBhMDAwY2RlZjI0Y2YwNzg1ZDQ4YTU4MWVjMDRlYTFmNGNiZDQ0MGQwMjU2MDdmNzc2ZCIsImV4cGlyZXNfYXQiOiIwMDAxLTAxLTAxVDAwOjAwOjAwWiJ9
 ```
 
 1. Подключаем клиентский бинарь к серверу развернутом в docker контейнере
 2. Переключаемся на управление с клиентского бинаря
 
-```
+```bash
 incus remote add incus https://127.0.0.1:8443
+```
+
+```
+
+Certificate fingerprint: d2c7c275f3b729066876739ffe2629ba4c0b46887f7d124c59fe2c6c54e13553
+ok (y/n/[fingerprint])? y
+Trust token for incus: eyJjbGllbnRfbmFtZSI6ImxvY2FsIiwiZmluZ2VycHJpbnQiOiJkMmM3YzI3NWYzYjcyOTA2Njg3NjczOWZmZTI2MjliYTRjMGI0Njg4N2Y3ZDEyNGM1OWZlMmM2YzU0ZTEzNTUzIiwiYWRkcmVzc2VzIjpbIjEwLjIyNC4xNTguMTcxOjg0NDMiLCIxNzIuMTcuMC4xOjg0NDMiLCIxOTIuMTY4LjEwMC4xOjg0NDMiLCIxOTIuMTY4LjIwMC4xOjg0NDMiLCIxOTIuMTY4LjEwMC4xOjg0NDMiXSwic2VjcmV0IjoiZGE2MzM2Mjk0ZmFkYTBhMDAwY2RlZjI0Y2YwNzg1ZDQ4YTU4MWVjMDRlYTFmNGNiZDQ0MGQwMjU2MDdmNzc2ZCIsImV4cGlyZXNfYXQiOiIwMDAxLTAxLTAxVDAwOjAwOjAwWiJ9
+Client certificate now trusted by server: incus
+```
+
+```bash
 incus remote switch incus
+```
+
+Проверяем подключение
+
+```bash
+incus info
+```
+
+Если все нормально - будет большой вывод
+
+```bash
+config:
+  core.https_address: :8443
+api_extensions:
+- storage_zfs_remove_snapshots
+- container_host_shutdown_timeout
+- container_stop_priority
+```
+
+Если подключение отсутствует
+
+```bash
+Error: The incus daemon doesn't appear to be started (socket path: /var/lib/incus/unix.socket)
 ```
 
 #### Загрузка lxc контейнеров в хранилище incus
