@@ -6,11 +6,16 @@ import (
 	"install/pkg/shell"
 	"log"
 	"strings"
+	"time"
 )
 
 const (
-	certFind   = "Client local certificate add token:\n"
-	remoteFind = "https://127.0.0.1:8443"
+	certFind    = "Client local certificate add token:\n"
+	remoteFind  = "https://127.0.0.1:8443"
+	sourcesList = `
+deb [trusted=yes] file:/tmp/archives 1.7_x86-64 main
+`
+	micDisableCMD = "astra-mic-control disable"
 )
 
 var config = `
@@ -56,10 +61,6 @@ projects:
   name: default
 `
 
-var sourcesList = `
-deb [trusted=yes] file:/tmp/archives 1.7_x86-64 main
-`
-
 var dockerCMDs = []string{
 	"/usr/bin/tar -xf docker-packages.tar.gz -C /tmp",
 	"/usr/bin/apt-get update --yes",
@@ -90,6 +91,12 @@ func (i *Install) Run() error {
 			return err
 		}
 	}
+	if _, err := shell.FromString(fmt.Sprintf("cp %s /var/lib/incus/", "incus-migrate")).WithDir(i.path).Run(); err != nil {
+		return fmt.Errorf("failed to copy in /usr/local/bin: %w", err)
+	}
+	if _, err := shell.FromString(micDisableCMD).WithDir(i.path).Run(); err != nil {
+		return fmt.Errorf("failed to disable mic control: %w", err)
+	}
 	return nil
 }
 
@@ -101,9 +108,6 @@ func (i *Install) copyBin() error {
 		if _, err := shell.FromString(fmt.Sprintf("cp %s /usr/local/bin", b)).WithDir(i.path).Run(); err != nil {
 			return fmt.Errorf("failed to copy %s in /usr/local/bin: %w", b, err)
 		}
-	}
-	if _, err := shell.FromString(fmt.Sprintf("cp %s /var/lib/incus/", "incus-migrate")).WithDir(i.path).Run(); err != nil {
-		return fmt.Errorf("failed to copy in /usr/local/bin: %w", err)
 	}
 	return nil
 }
@@ -151,6 +155,7 @@ func (i *Install) importImage() error {
 		if _, err := shell.FromString(dockerRunCMD).WithDir(i.path).Run(); err != nil {
 			return fmt.Errorf("failed to docker run: %w", err)
 		}
+		time.Sleep(time.Second * 5)
 	}
 	log.Println("incus container runned")
 	return nil
