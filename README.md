@@ -187,6 +187,7 @@ api_extensions:
 - storage_zfs_remove_snapshots
 - container_host_shutdown_timeout
 - container_stop_priority
+...
 ```
 
 Если подключение отсутствует
@@ -197,11 +198,20 @@ Error: The incus daemon doesn't appear to be started (socket path: /var/lib/incu
 
 #### Загрузка lxc контейнеров в хранилище incus
 
+> - Загружаем в хранилище скаченные lxc имейджы
+> - [Astra linux common edition 1.7.6 lxc контейнер для incus](https://github.com/devil666face/astra-lxc-incus/releases/download/v0.0.0/alce-incus-lxc-image.tar.gz)
+> - [Astra linux special edition 1.7.6 lxc контейнер для incus](https://github.com/devil666face/astra-lxc-incus/releases/download/v0.0.0/alse-incus-lxc-image.tar.gz)
+
+```bash
+incus image import alce-incus-lxc-image.tar.gz --alias alce
+incus image import alse-incus-lxc-image.tar.gz --alias alse
+```
+
 ## Развертывание lxc контейнеров
 
 ---
 
-## Сборка lxc контейнера с ALSE/ALCE (опционально) и подготовка под incus
+## Сборка lxc контейнера с ALSE/ALCE и подготовка под incus
 
 > Рекомендую использовать уже собранные и подготовленные контейнеры
 > Работает на astra >=1.7.6
@@ -217,8 +227,9 @@ lxc-create -t astralinux-ce -n alce
 lxc-create -t astralinux-se -n alse
 ```
 
-> Далее описаны действия для одного имейджа - alce (common edition) если вам необходим se (special edition), необходимы провести аналогичные действия, но заменив `alce` на `alse`
-> Создаем файл метадаты для incus имейджа
+> Далее описаны действия для одного имейджа - alce (common edition) если вам необходим se (special edition), необходимо провести аналогичные действия, но заменив `alce` на `alse`
+
+Создаем файл метадаты для incus имейджа
 
 ```
 cd /var/lib/lxc/alce/
