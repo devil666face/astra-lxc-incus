@@ -9,7 +9,7 @@ import (
 
 var (
 	path       = flag.String("path", ".", "base path to files")
-	disablemic = flag.Bool("nomic", true, "not disable mic control")
+	disablemic = flag.Bool("nomic", false, "not disable mic control")
 )
 
 func main() {

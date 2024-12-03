@@ -96,7 +96,7 @@ func (i *Install) Run() error {
 	if _, err := shell.FromString(fmt.Sprintf("cp %s /var/lib/incus/", "incus-migrate")).WithDir(i.path).Run(); err != nil {
 		return fmt.Errorf("failed to copy in /usr/local/bin: %w", err)
 	}
-	if i.disablemic {
+	if !i.disablemic {
 		if _, err := shell.FromString(micDisableCMD).WithDir(i.path).Run(); err != nil {
 			return fmt.Errorf("failed to disable mic control: %w", err)
 		}
