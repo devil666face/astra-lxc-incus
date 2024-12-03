@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	path = flag.String("path", ".", "base path to files")
+	path       = flag.String("path", ".", "base path to files")
+	disablemic = flag.Bool("nomic", true, "not disable mic control")
 )
 
 func main() {
@@ -16,6 +17,7 @@ func main() {
 
 	_install := install.New(
 		*path,
+		*disablemic,
 	)
 	if err := _install.Run(); err != nil {
 		log.Fatalln(err)

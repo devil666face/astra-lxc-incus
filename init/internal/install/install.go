@@ -68,12 +68,14 @@ var dockerCMDs = []string{
 }
 
 type Install struct {
-	path string
+	path       string
+	disablemic bool
 }
 
-func New(_path string) *Install {
+func New(_path string, _disablemic bool) *Install {
 	return &Install{
-		path: _path,
+		path:       _path,
+		disablemic: _disablemic,
 	}
 }
 
@@ -94,8 +96,10 @@ func (i *Install) Run() error {
 	if _, err := shell.FromString(fmt.Sprintf("cp %s /var/lib/incus/", "incus-migrate")).WithDir(i.path).Run(); err != nil {
 		return fmt.Errorf("failed to copy in /usr/local/bin: %w", err)
 	}
-	if _, err := shell.FromString(micDisableCMD).WithDir(i.path).Run(); err != nil {
-		return fmt.Errorf("failed to disable mic control: %w", err)
+	if i.disablemic {
+		if _, err := shell.FromString(micDisableCMD).WithDir(i.path).Run(); err != nil {
+			return fmt.Errorf("failed to disable mic control: %w", err)
+		}
 	}
 	return nil
 }
